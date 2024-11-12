@@ -203,6 +203,36 @@ additive or multiplicative multigrid smoothers."
     ./step-63 ../step-63/sor.prm
 }
 
+function run_meshes() {
+
+    DIR=$(pwd)/build-meshes
+    if [ -d "$DIR" ]; then
+        printf '%s\n' "Removing Lock ($DIR)"
+        rm -rf "$DIR"
+    fi
+
+    clang-format --style=file -i thesis/meshes/*.{cc,hh}
+    clear
+
+    meshes_description="Description: Meshes"
+    meshes_url="https://github.com/heena008/Meshes-in-dealii"
+
+    echo "Running meshes"
+    echo ${meshes_description}
+    echo "See more at ${meshes_url}"
+
+    cmake -S thesis/meshes \
+        -B build-meshes \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_COMPILER=mpic++ \
+        -DCMAKE_CXX_STANDARD=20 \
+        -DCMAKE_CXX_STANDARD_REQUIRED=True \
+        -DCMAKE_CXX_FLAGS="-Wall -Wextra -pedantic -Werror" \
+        -Wno-dev
+
+    cmake --build build-meshes --target run # --parallel $nproc
+}
+
 function run_diffusion() {
 
     DIR=$(pwd)/build-diffusion
@@ -214,7 +244,7 @@ function run_diffusion() {
     clang-format --style=file -i thesis/diffusion/*.{cc,hh}
     clear
 
-    diffusion_description="Description: Meshes"
+    diffusion_description="Description: Diffusion"
     diffusion_url="https://github.com/heena008/Diffusion-Equation-with-MsFEM.io"
 
     echo "Running diffusion"
@@ -233,6 +263,66 @@ function run_diffusion() {
     cmake --build build-diffusion --target main # --parallel $nproc
 }
 
+function run_advection-diffusion() {
+
+    DIR=$(pwd)/build-advection-diffusion
+    if [ -d "$DIR" ]; then
+        printf '%s\n' "Removing Lock ($DIR)"
+        rm -rf "$DIR"
+    fi
+
+    clang-format --style=file -i thesis/advection-diffusion/*.{cc,hh}
+    clear
+
+    advection_diffusion_description="Description: Advection-diffusion"
+    advection_diffusion_url="https://github.com/heena008/Advection-Diffusion_MsFEM.io"
+
+    echo "Running advection-diffusion"
+    echo ${advection_diffusion_description}
+    echo "See more at ${advection_diffusion_url}"
+
+    cmake -S thesis/advection-diffusion \
+        -B build-advection-diffusion \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_COMPILER=mpic++ \
+        -DCMAKE_CXX_STANDARD=20 \
+        -DCMAKE_CXX_STANDARD_REQUIRED=True \
+        -DCMAKE_CXX_FLAGS="-Wall -Wextra -pedantic -Werror" \
+        -Wno-dev
+
+    cmake --build build-advection-diffusion --target main # --parallel $nproc
+}
+
+function run_rk4() {
+
+    DIR=$(pwd)/build-rk4
+    if [ -d "$DIR" ]; then
+        printf '%s\n' "Removing Lock ($DIR)"
+        rm -rf "$DIR"
+    fi
+
+    clang-format --style=file -i thesis/rk4/*.{cc,hh}
+    clear
+
+    rk4_description="Description: RK4"
+    rk4_url="https://github.com/heena008/Runge_Kutta_fourth_order"
+
+    echo "Running rk4"
+    echo ${rk4_description}
+    echo "See more at ${rk4_url}"
+
+    cmake -S thesis/rk4 \
+        -B build-rk4 \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_COMPILER=mpic++ \
+        -DCMAKE_CXX_STANDARD=20 \
+        -DCMAKE_CXX_STANDARD_REQUIRED=True \
+        -DCMAKE_CXX_FLAGS="-Wall -Wextra -pedantic -Werror -Wno-error=unused-variable -Wno-error=return-type" \
+        -Wno-dev
+
+    cmake --build build-rk4 --target run # --parallel $nproc
+}
+
 # run_9
 # run_12
 # run_26
@@ -240,4 +330,6 @@ function run_diffusion() {
 # run_52
 # run_63
 # run_meshes
-run_diffusion
+# run_diffusion
+# run_advection-diffusion
+run_rk4
