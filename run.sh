@@ -203,9 +203,41 @@ additive or multiplicative multigrid smoothers."
     ./step-63 ../step-63/sor.prm
 }
 
+function run_diffusion() {
+
+    DIR=$(pwd)/build-diffusion
+    if [ -d "$DIR" ]; then
+        printf '%s\n' "Removing Lock ($DIR)"
+        rm -rf "$DIR"
+    fi
+
+    clang-format --style=file -i thesis/diffusion/*.{cc,hh}
+    clear
+
+    diffusion_description="Description: Meshes"
+    diffusion_url="https://github.com/heena008/Diffusion-Equation-with-MsFEM.io"
+
+    echo "Running diffusion"
+    echo ${diffusion_description}
+    echo "See more at ${diffusion_url}"
+
+    cmake -S thesis/diffusion \
+        -B build-diffusion \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_COMPILER=mpic++ \
+        -DCMAKE_CXX_STANDARD=20 \
+        -DCMAKE_CXX_STANDARD_REQUIRED=True \
+        -DCMAKE_CXX_FLAGS="-Wall -Wextra -pedantic -Werror -Wno-error=unused-parameter -Wno-error=unused-variable" \
+        -Wno-dev
+
+    cmake --build build-diffusion --target main # --parallel $nproc
+}
+
 # run_9
 # run_12
 # run_26
 # run_51
 # run_52
-run_63
+# run_63
+# run_meshes
+run_diffusion
